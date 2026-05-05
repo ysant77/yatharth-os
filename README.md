@@ -290,15 +290,33 @@ GET /skills
 
 ---
 
-## Running the CLI
+## CLI Usage
+
+Yatharth OS includes a Rich/Typer-powered CLI that reads from the same structured
+JSON data layer as the FastAPI backend.
+
+Run commands through Poetry:
 
 ```bash
 poetry run yatharth whoami
+poetry run yatharth skills
 poetry run yatharth projects
 poetry run yatharth projects --tag rag
-poetry run yatharth skills
 poetry run yatharth experience
+poetry run yatharth version
 ```
+
+### Available commands
+
+| Command | Purpose |
+|---|---|
+| `yatharth whoami` | Display a concise profile card |
+| `yatharth skills` | Show skills grouped by category |
+| `yatharth projects` | Show all portfolio projects |
+| `yatharth projects --tag <tag>` | Filter projects by tag |
+| `yatharth experience` | Show professional experience |
+| `yatharth version` | Show CLI version |
+| `yatharth` | Show CLI help |
 
 ---
 
