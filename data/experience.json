@@ -1,0 +1,38 @@
+[
+  {
+    "role": "Research Engineer",
+    "organization": "National University of Singapore",
+    "location": "Singapore",
+    "start": "2024-08",
+    "end": "Present",
+    "highlights": [
+      "Developed AI systems for large-scale datasets, model pipelines, inference, and evaluation.",
+      "Designed reproducible ML workflows across data preparation, training, and deployment environments.",
+      "Optimized inference pipelines for latency, throughput, and scalability."
+    ]
+  },
+  {
+    "role": "AI Intern",
+    "organization": "Ample Solutions",
+    "location": "Singapore",
+    "start": "2024-03",
+    "end": "2024-08",
+    "highlights": [
+      "Built production-grade LLM systems for document intelligence using RAG pipelines.",
+      "Implemented FastAPI services for scalable inference and workflow orchestration.",
+      "Worked on response validation and RAG-style evaluation workflows."
+    ]
+  },
+  {
+    "role": "Scientist / Engineer SC",
+    "organization": "Indian Space Research Organization",
+    "location": "Ahmedabad, India",
+    "start": "2021-10",
+    "end": "2023-07",
+    "highlights": [
+      "Developed deep learning models for operational geospatial applications.",
+      "Architected scalable geospatial systems for production workloads.",
+      "Automated validation pipelines and mentored engineers."
+    ]
+  }
+]

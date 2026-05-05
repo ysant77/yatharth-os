@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments (Poetry & Virtualenvs)
+.venv/
+env/
+venv/
+ENV/
+.python-version
+
+# Poetry-specific
+# Note: DO NOT ignore poetry.lock if you want reproducible builds
+# Ignore only if this is a library intended for others to use as a dependency
+# poetry.lock
+
+# FastAPI / Web Server
+.env
+.env.local
+.env.*.local
+*.log
+
+# Databases (if using SQLite for local dev)
+*.sqlite3
+*.db
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/

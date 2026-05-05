@@ -1,0 +1,7 @@
+{
+  "generative_ai": ["LLMs", "RAG", "prompt engineering", "embeddings", "multimodal retrieval"],
+  "ml_systems": ["data pipelines", "model training", "evaluation", "deployment", "experiment tracking"],
+  "backend": ["FastAPI", "REST APIs", "Python", "workflow orchestration"],
+  "mlops": ["CI/CD", "Docker", "Kubernetes", "reproducible workflows"],
+  "domains": ["remote sensing", "SAR", "computer vision", "document intelligence"]
+}

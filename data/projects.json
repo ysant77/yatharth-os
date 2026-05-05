@@ -1,0 +1,23 @@
+[
+  {
+    "name": "SemanticForce",
+    "slug": "semanticforce",
+    "description": "LLM-based financial document assistant for structured querying, summarization, and contextual retrieval.",
+    "tags": ["llm", "rag", "fastapi", "document-ai"],
+    "url": "https://github.com/ysant77/PLP-PM-SemanticForce"
+  },
+  {
+    "name": "MultimodalRAG",
+    "slug": "multimodal-rag",
+    "description": "Multimodal retrieval-augmented generation system integrating text and image embeddings with grounded responses.",
+    "tags": ["multimodal", "rag", "embeddings"],
+    "url": "https://github.com/ysant77/MultimodalRAG"
+  },
+  {
+    "name": "Forest Cover Classification Using Sentinel Imagery",
+    "slug": "forest-cover-classification",
+    "description": "UNet-based segmentation workflow for large-scale satellite image classification.",
+    "tags": ["computer-vision", "remote-sensing", "unet"],
+    "url": "https://github.com/ysant77/Forest-Cover-Classification"
+  }
+]
