@@ -28,9 +28,9 @@ This gives us a clean foundation for:
 ## Core idea
 
 ```text
-Frontend portfolio  ← calls → FastAPI backend
-CLI portfolio       ← calls → same profile/data layer
-Static JSON data    ← powers → profile, projects, skills, experience
+Frontend portfolio  <- calls -> FastAPI backend
+CLI portfolio       <- calls -> same profile/data layer
+Static JSON data    <- powers -> profile, projects, skills, experience
 ```
 
 ---
@@ -38,11 +38,14 @@ Static JSON data    ← powers → profile, projects, skills, experience
 ## Current features
 
 - FastAPI backend
-- Rich/Typer-based CLI
+- Rich/Typer-based CLI foundation
 - Static JSON-backed profile data
 - Poetry-based Python project management
 - Unit tests with Pytest
 - API tests with FastAPI TestClient
+- Coverage reporting with pytest-cov
+- Formatting with Black
+- Linting with Ruff
 - GitHub Actions CI workflow
 - Dockerfile for containerized API runtime
 
@@ -50,13 +53,13 @@ Static JSON data    ← powers → profile, projects, skills, experience
 
 ## Planned features
 
+- Richer CLI interaction inspired by developer tools like Git, Docker, and modern AI coding CLIs
 - Project search and filtering
 - Resume/profile export as Markdown, JSON, and PDF
 - Frontend integration with the current portfolio site
 - Docker Compose setup
 - Jenkins pipeline for enterprise CI practice
 - Deployment pipeline
-- Better CLI interaction inspired by developer tools like Git, Docker, and modern AI coding CLIs
 
 Example future commands:
 
@@ -118,6 +121,7 @@ yatharth-os/
 | Data storage | JSON files |
 | Project management | Poetry |
 | Testing | Pytest |
+| Coverage | pytest-cov |
 | API testing | FastAPI TestClient |
 | Formatting | Black |
 | Linting | Ruff |
@@ -126,49 +130,137 @@ yatharth-os/
 
 ---
 
-## Getting started
+## Local development setup
 
-### 1. Clone the repository
+This project uses **Poetry** for dependency management.
 
-```bash
-git clone https://github.com/<your-username>/yatharth-os.git
-cd yatharth-os
-```
+### 1. Install Poetry
 
-### 2. Install Poetry
+Recommended installation:
 
 ```bash
 pipx install poetry
 ```
 
-Check installation:
+Alternative installation:
+
+```bash
+pip install poetry
+```
+
+Verify installation:
 
 ```bash
 poetry --version
 ```
 
-### 3. Install dependencies
+---
+
+### 2. Install project dependencies
+
+For normal application usage:
 
 ```bash
 poetry install
 ```
 
-### 4. Run tests
+For local development, testing, linting, formatting, and coverage:
+
+```bash
+poetry install --with dev
+```
+
+This is important because development tools such as `pytest`, `pytest-cov`, `black`, and `ruff` are stored in the `dev` dependency group.
+
+---
+
+### 3. Activate the Poetry environment
+
+You can run commands directly using `poetry run`:
 
 ```bash
 poetry run pytest
 ```
 
-### 5. Run linting
+Or activate the environment:
+
+```bash
+poetry shell
+```
+
+If `poetry shell` is unavailable in your Poetry version, use:
+
+```bash
+poetry env activate
+```
+
+---
+
+## Common setup issue
+
+### Pytest does not recognize `--cov`
+
+If you see:
+
+```text
+pytest: error: unrecognized arguments: --cov=yatharth_os --cov-report=term-missing
+```
+
+it means `pytest-cov` is not installed in your active Poetry environment.
+
+Fix it with:
+
+```bash
+poetry install --with dev
+```
+
+Then verify that coverage options are available:
+
+```bash
+poetry run pytest --help
+```
+
+You should see options such as:
+
+```text
+--cov
+--cov-report
+```
+
+---
+
+## Running checks locally
+
+Run tests:
+
+```bash
+poetry run pytest
+```
+
+Run linting:
 
 ```bash
 poetry run ruff check src tests
 ```
 
-### 6. Check formatting
+Check formatting:
 
 ```bash
 poetry run black --check src tests
+```
+
+Auto-format code:
+
+```bash
+poetry run black src tests
+```
+
+Recommended full local check before pushing:
+
+```bash
+poetry run black src tests
+poetry run ruff check src tests
+poetry run pytest
 ```
 
 ---
@@ -191,6 +283,7 @@ Useful endpoints:
 GET /health
 GET /profile
 GET /projects
+GET /projects?tag=rag
 GET /experience
 GET /skills
 ```
@@ -204,6 +297,7 @@ poetry run yatharth whoami
 poetry run yatharth projects
 poetry run yatharth projects --tag rag
 poetry run yatharth skills
+poetry run yatharth experience
 ```
 
 ---
@@ -237,11 +331,13 @@ This project should be developed using small feature branches and pull requests.
 Recommended flow:
 
 ```bash
-git checkout -b feature/project-bootstrap
+git checkout main
+git pull origin main
+git checkout -b feature/<short-feature-name>
 # make changes
 git add .
-git commit -m "chore: bootstrap poetry project"
-git push origin feature/project-bootstrap
+git commit -m "feat(scope): describe the change"
+git push origin feature/<short-feature-name>
 ```
 
 Then open a pull request into `main`.
@@ -266,7 +362,7 @@ feat(profile): add static profile loader
 feat(api): expose profile endpoint
 test(api): cover health and profile endpoints
 ci: add GitHub Actions workflow
-docs: add setup instructions
+docs: clarify Poetry development setup
 ```
 
 Common types:
@@ -280,42 +376,7 @@ Common types:
 | refactor | Code change without behavior change |
 | chore | Maintenance/setup work |
 | ci | CI/CD workflow changes |
+| style | Formatting-only change |
 
 ---
 
-## Learning goals
-
-This repository is intentionally designed to help practise:
-
-- modern Python project structure
-- `pyproject.toml` and Poetry workflows
-- clean Git commits
-- feature branches and pull requests
-- merge and rebase workflows
-- API development with FastAPI
-- CLI development with Rich and Typer
-- unit and integration testing
-- GitHub Actions CI
-- Docker-based reproducibility
-
----
-
-## Roadmap
-
-| Phase | Goal | Status |
-|---|---|---|
-| Phase 0 | Bootstrap project with Poetry, FastAPI, CLI, tests | In progress |
-| Phase 1 | Add richer profile/project data | Planned |
-| Phase 2 | Improve CLI commands and UX | Planned |
-| Phase 3 | Add CI checks and branch protection | Planned |
-| Phase 4 | Add Docker Compose and deployment workflow | Planned |
-| Phase 5 | Integrate with portfolio frontend | Planned |
-| Phase 6 | Add export features | Planned |
-
----
-
-## Philosophy
-
-This project is not just a portfolio backend.
-
-It is a statement of engineering maturity: clean structure, reproducible workflows, strong documentation, automated checks, and thoughtful user experience across API, CLI, and eventually UI.
