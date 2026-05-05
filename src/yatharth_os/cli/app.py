@@ -13,12 +13,16 @@ console = Console()
 def whoami() -> None:
     """Show a quick identity card."""
     profile = load_profile()
-    body = f"[bold]{profile['name']}[/bold]\n{profile['headline']}\n{profile['location']}"
+    body = (
+        f"[bold]{profile['name']}[/bold]\n{profile['headline']}\n{profile['location']}"
+    )
     console.print(Panel(body, title="whoami", expand=False))
 
 
 @app.command()
-def projects(tag: str | None = typer.Option(None, help="Filter projects by tag.")) -> None:
+def projects(
+    tag: str | None = typer.Option(None, help="Filter projects by tag.")
+) -> None:
     """List selected projects."""
     items = load_projects()
     if tag:
