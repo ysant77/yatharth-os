@@ -1,19 +1,20 @@
-FROM python:3.11-slim
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    POETRY_VERSION=1.8.3
+FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV POETRY_VERSION=1.8.3
+
 RUN pip install --no-cache-dir "poetry==$POETRY_VERSION"
 
-COPY pyproject.toml README.md ./
-COPY src ./src
-COPY data ./data
+COPY pyproject.toml poetry.lock* ./
 
 RUN poetry config virtualenvs.create false \
     && poetry install --only main --no-interaction --no-ansi
+
+COPY data ./data
+COPY src ./src
 
 EXPOSE 8000
 
