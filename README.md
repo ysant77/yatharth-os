@@ -1,6 +1,7 @@
 # Yatharth OS
 
-![CI](https://github.com/<your-username>/yatharth-os/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/ysant77/yatharth-os/actions/workflows/ci.yml/badge.svg)](https://github.com/ysant77/yatharth-os/actions/workflows/ci.yml)
+[![Docker Build](https://github.com/ysant77/yatharth-os/actions/workflows/docker.yml/badge.svg)](https://github.com/ysant77/yatharth-os/actions/workflows/docker.yml)
 
 **Yatharth OS** is a CLI-first, API-backed engineering portfolio for **Yatharth Mahesh Sant**.
 
@@ -400,3 +401,76 @@ Common types:
 
 ---
 
+## Running with Docker
+
+Yatharth OS can be packaged and run as a Docker container for reproducible local development and deployment workflows.
+
+### Build the Docker image
+
+```bash
+docker build -t yatharth-os .
+```
+
+### Run the API container
+
+```bash
+docker run --rm -p 8000:8000 yatharth-os
+```
+
+The API will now be available at:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+## Running with Docker Compose
+
+For local orchestration and easier container management:
+
+```bash
+docker compose up --build
+```
+
+Stop the service:
+
+```bash
+docker compose down
+```
+
+---
+
+## Useful Docker validation commands
+
+### Verify the health endpoint
+
+```bash
+curl http://localhost:8000/health
+```
+
+### Fetch profile data
+
+```bash
+curl http://localhost:8000/profile
+```
+
+### Fetch projects
+
+```bash
+curl http://localhost:8000/projects
+```
+
+---
+
+## Why Docker is included
+
+The Docker setup exists to ensure:
+
+* reproducible backend environments
+* dependency consistency across machines
+* deployment-ready packaging
+* CI/CD compatibility
+* easier future cloud deployment
+
+This also helps practise production-style backend engineering workflows commonly used in modern AI and platform engineering teams.
