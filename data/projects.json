@@ -1,23 +1,37 @@
 [
   {
+    "name": "MultimodalRAG",
+    "slug": "multimodal-rag",
+    "description": "Multimodal retrieval-augmented generation system integrating text and image embeddings with structured reasoning pipelines.",
+    "tags": ["multimodal", "rag", "embeddings", "llm"],
+    "url": "https://github.com/ysant77/MultimodalRAG"
+  },
+  {
     "name": "SemanticForce",
     "slug": "semanticforce",
-    "description": "LLM-based financial document assistant for structured querying, summarization, and contextual retrieval.",
+    "description": "LLM-based financial document assistant for structured querying, summarization, contextual retrieval, and grounded document intelligence.",
     "tags": ["llm", "rag", "fastapi", "document-ai"],
     "url": "https://github.com/ysant77/PLP-PM-SemanticForce"
   },
   {
-    "name": "MultimodalRAG",
-    "slug": "multimodal-rag",
-    "description": "Multimodal retrieval-augmented generation system integrating text and image embeddings with grounded responses.",
-    "tags": ["multimodal", "rag", "embeddings"],
-    "url": "https://github.com/ysant77/MultimodalRAG"
-  },
-  {
     "name": "Forest Cover Classification Using Sentinel Imagery",
     "slug": "forest-cover-classification",
-    "description": "UNet-based segmentation workflow for large-scale satellite image classification.",
-    "tags": ["computer-vision", "remote-sensing", "unet"],
+    "description": "UNet-based computer vision pipeline for large-scale satellite imagery segmentation and forest cover classification.",
+    "tags": ["computer-vision", "remote-sensing", "unet", "segmentation"],
     "url": "https://github.com/ysant77/Forest-Cover-Classification"
+  },
+  {
+    "name": "AI-Based Health Monitoring & Nutrition Planning",
+    "slug": "ai-health-monitoring-nutrition",
+    "description": "NLP-driven chatbot with real-time backend workflows and predictive machine learning models for health monitoring and nutrition planning.",
+    "tags": ["nlp", "chatbot", "machine-learning", "health-ai"],
+    "url": "https://github.com/ysant77/AI-Based-HealthMonitoring"
+  },
+  {
+    "name": "Investor Intelligence Agent",
+    "slug": "investor-intelligence-agent",
+    "description": "Automated investment analysis system combining machine learning pipelines, risk modeling, and structured financial intelligence.",
+    "tags": ["machine-learning", "finance", "risk-modeling", "agent"],
+    "url": "https://github.com/ysant77/ISA-PM-InvestorIntelligenceAgent"
   }
 ]

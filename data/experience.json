@@ -6,9 +6,10 @@
     "start": "2024-08",
     "end": "Present",
     "highlights": [
-      "Developed AI systems for large-scale datasets, model pipelines, inference, and evaluation.",
-      "Designed reproducible ML workflows across data preparation, training, and deployment environments.",
-      "Optimized inference pipelines for latency, throughput, and scalability."
+      "Own end-to-end development of computer vision pipelines for large-scale SAR datasets, covering data preprocessing, model training, evaluation, and deployment.",
+      "Designed reproducible ML workflows bridging HPC experimentation with deployable systems, enabling scalable model iteration.",
+      "Led optimization of inference pipelines on AMD Versal VCK190 using C++, improving latency-performance trade-offs for deployment.",
+      "Built system-level pipelines integrating model outputs with downstream processing and evaluation workflows."
     ]
   },
   {
@@ -18,9 +19,10 @@
     "start": "2024-03",
     "end": "2024-08",
     "highlights": [
-      "Built production-grade LLM systems for document intelligence using RAG pipelines.",
-      "Implemented FastAPI services for scalable inference and workflow orchestration.",
-      "Worked on response validation and RAG-style evaluation workflows."
+      "Developed LLM-based systems including RAG pipelines and backend APIs for enterprise workflows.",
+      "Built and deployed GPU-backed inference services using FastAPI, improving scalability and response latency.",
+      "Designed evaluation workflows for generated responses, validating outputs against retrieved context.",
+      "Established CI/CD pipelines to improve deployment reliability of AI services."
     ]
   },
   {
@@ -30,9 +32,40 @@
     "start": "2021-10",
     "end": "2023-07",
     "highlights": [
-      "Developed deep learning models for operational geospatial applications.",
-      "Architected scalable geospatial systems for production workloads.",
-      "Automated validation pipelines and mentored engineers."
+      "Developed and deployed GAN-based computer vision models for SAR imagery using 10,000+ samples in production systems.",
+      "Architected a global-scale geospatial computation platform delivering 5–10 second response times.",
+      "Built automated data validation and quality pipelines, reducing QA effort by 60%.",
+      "Led model development lifecycle including training, evaluation, and operational deployment with approximately 95% accuracy."
+    ]
+  },
+  {
+    "role": "Programmer Analyst",
+    "organization": "SCIO Health Analytics",
+    "location": "India",
+    "start": "2020-08",
+    "end": "2021-02",
+    "highlights": [
+      "Built a C#/WPF runtime configuration system, reducing application startup time by 40%."
+    ]
+  },
+  {
+    "role": "Software Trainee",
+    "organization": "Tavisca Solutions",
+    "location": "India",
+    "start": "2019-07",
+    "end": "2020-08",
+    "highlights": [
+      "Developed and optimized backend APIs, improving response time by up to 70%."
+    ]
+  },
+  {
+    "role": "Associate Software Engineer",
+    "organization": "Accenture",
+    "location": "India",
+    "start": "2018-09",
+    "end": "2019-04",
+    "highlights": [
+      "Automated incident management workflows, reducing resolution time by 30%."
     ]
   }
 ]

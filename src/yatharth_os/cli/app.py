@@ -187,28 +187,45 @@ def projects(
 
 @app.command()
 def experience() -> None:
-    """Show professional experience as terminal panels."""
+    """Show professional experience as terminal panels.
+
+    The experience JSON uses a resume-friendly structure:
+    role, organization, location, start, end, and highlights.
+
+    This command intentionally avoids assuming fields like company,
+    duration, or description so the CLI stays aligned with the source data.
+    """
 
     experience_data = load_experience()
 
     for item in experience_data:
         role = item.get("role", "Role")
-        company = item.get("company", "Company")
-        duration = item.get("duration", "")
-        description = item.get("description", "")
+        organization = item.get("organization", item.get("company", "Organization"))
+        location = item.get("location", "")
+        start = item.get("start", "")
+        end = item.get("end", "")
+        highlights = item.get("highlights", [])
+
+        duration = f"{start} - {end}".strip(" -")
 
         body = Text()
         body.append(f"{role}\n", style="bold green")
-        body.append(f"{duration}\n", style="cyan")
 
-        if description:
+        if duration:
+            body.append(f"{duration}\n", style="cyan")
+
+        if location:
+            body.append(f"{location}\n", style="magenta")
+
+        if highlights:
             body.append("\n")
-            body.append(str(description), style="white")
+            for highlight in highlights:
+                body.append(f"• {highlight}\n", style="white")
 
         console.print(
             Panel(
                 body,
-                title=str(company),
+                title=str(organization),
                 border_style="cyan",
                 expand=False,
             )
