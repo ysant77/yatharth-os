@@ -2,13 +2,21 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+      - feature/**
+      - fix/**
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
 
     steps:
       - name: Checkout repository
@@ -17,10 +25,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry
-        run: pipx install poetry
+        uses: snok/install-poetry@v1
 
       - name: Configure Poetry
         run: poetry config virtualenvs.in-project true
@@ -29,15 +37,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            venv-${{ runner.os }}-
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root
-
-      - name: Install project
-        run: poetry install --no-interaction
+        run: poetry install --with dev
 
       - name: Check formatting
         run: poetry run black --check src tests
