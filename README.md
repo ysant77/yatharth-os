@@ -1,5 +1,7 @@
 # Yatharth OS
 
+![CI](https://github.com/<your-username>/yatharth-os/actions/workflows/ci.yml/badge.svg)
+
 **Yatharth OS** is a CLI-first, API-backed engineering portfolio for **Yatharth Mahesh Sant**.
 
 The goal is simple: build a real production-style Python project that can power a personal portfolio, expose structured profile data through FastAPI, and provide a developer-friendly terminal interface using Rich and Typer.
