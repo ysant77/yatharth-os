@@ -1,5 +1,5 @@
 # Yatharth OS
-
+```md
 ![CI](https://github.com/<your-username>/yatharth-os/actions/workflows/ci.yml/badge.svg)
 
 **Yatharth OS** is a CLI-first, API-backed engineering portfolio for **Yatharth Mahesh Sant**.
