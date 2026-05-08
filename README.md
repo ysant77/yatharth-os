@@ -474,3 +474,51 @@ The Docker setup exists to ensure:
 * easier future cloud deployment
 
 This also helps practise production-style backend engineering workflows commonly used in modern AI and platform engineering teams.
+
+## Exporting Profile as PDF
+
+Yatharth OS can export the JSON-backed portfolio data as a clean PDF profile.
+
+The export feature is available through both the CLI and the FastAPI backend.
+
+### CLI export
+
+Generate a PDF in the current directory:
+
+```bash
+poetry run yatharth export-pdf
+```
+
+Generate a PDF at a custom path:
+
+```bash
+poetry run yatharth export-pdf --output exports/yatharth-profile.pdf
+```
+
+### API export
+
+Run the API:
+
+```bash
+poetry run uvicorn yatharth_os.api.app:app --reload
+```
+
+Download the PDF from:
+
+```text
+http://localhost:8000/export/profile.pdf
+```
+
+You can also test it with curl:
+
+```bash
+curl -L -o yatharth-profile.pdf http://localhost:8000/export/profile.pdf
+```
+
+### Why this exists
+
+The export feature turns the portfolio data layer into a reusable professional artifact.
+
+Instead of manually maintaining separate resume, website, and CLI content, the project can generate a formatted profile directly from structured JSON data.
+
+This keeps the system closer to a single source of truth.

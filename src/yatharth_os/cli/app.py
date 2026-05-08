@@ -17,6 +17,7 @@ Example usage:
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import typer
@@ -31,6 +32,7 @@ from yatharth_os.core.loader import (
     load_projects,
     load_skills,
 )
+from yatharth_os.exporters.pdf import build_profile_pdf_bytes
 
 app = typer.Typer(
     name="yatharth",
@@ -183,6 +185,33 @@ def projects(
         raise typer.Exit(code=0)
 
     console.print(table)
+
+
+DEFAULT_EXPORT_OUTPUT = typer.Option(
+    Path("yatharth-profile.pdf"),
+    "--output",
+    "-o",
+    help="Output PDF path.",
+)
+
+
+@app.command("export-pdf")
+def export_pdf(output: Path = DEFAULT_EXPORT_OUTPUT) -> None:
+    """Export the profile and resume-style portfolio data as a PDF."""
+
+    pdf_bytes = build_profile_pdf_bytes()
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_bytes(pdf_bytes)
+
+    console.print(
+        Panel(
+            f"PDF exported successfully:\n[bold green]{output.resolve()}[/bold green]",
+            title="Export complete",
+            border_style="green",
+            expand=False,
+        )
+    )
 
 
 @app.command()
