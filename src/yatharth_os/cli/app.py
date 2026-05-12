@@ -49,6 +49,15 @@ auth_app = typer.Typer(
 )
 
 app.add_typer(auth_app, name="auth")
+
+contact_app = typer.Typer(
+    name="contact",
+    help="Submit and track contact requests.",
+    no_args_is_help=True,
+)
+
+app.add_typer(contact_app, name="contact")
+
 console = Console()
 
 DEFAULT_API_URL = "http://127.0.0.1:8000"
@@ -401,6 +410,115 @@ def auth_me() -> None:
             f"[bold cyan]{user['full_name']}[/bold cyan]\n{user['email']}\n"
             f"Active: {user['is_active']}",
             title="Authenticated user",
+            border_style="cyan",
+        )
+    )
+
+
+@contact_app.command("submit")
+def contact_submit() -> None:
+    """Submit an authenticated contact request."""
+
+    token = _load_token()
+
+    if token is None:
+        console.print(
+            Panel(
+                "No stored token found. Run `yatharth auth login` first.",
+                title="Not authenticated",
+                border_style="yellow",
+            )
+        )
+        raise typer.Exit(code=1)
+
+    name = typer.prompt("Name")
+    email = typer.prompt("Email")
+    company = typer.prompt("Company", default="")
+    purpose = typer.prompt(
+        "Purpose",
+        default="collaboration",
+    )
+    message = typer.prompt("Message")
+    calendly_requested = typer.confirm("Would you like a Calendly link?", default=True)
+
+    response = httpx.post(
+        f"{_api_url()}/contact-requests",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "name": name,
+            "email": email,
+            "company": company or None,
+            "purpose": purpose,
+            "message": message,
+            "calendly_requested": calendly_requested,
+        },
+        timeout=10.0,
+    )
+
+    if response.status_code != 201:
+        console.print(
+            Panel(
+                response.text,
+                title="Contact request failed",
+                border_style="red",
+            )
+        )
+        raise typer.Exit(code=1)
+
+    body = response.json()
+
+    console.print(
+        Panel(
+            f"Request ID: [bold green]{body['request_id']}[/bold green]\n"
+            f"Status: {body['status']}\n\n"
+            f"{body['message']}",
+            title="Contact request submitted",
+            border_style="green",
+        )
+    )
+
+
+@contact_app.command("status")
+def contact_status(request_id: str) -> None:
+    """Check the status of an authenticated contact request."""
+
+    token = _load_token()
+
+    if token is None:
+        console.print(
+            Panel(
+                "No stored token found. Run `yatharth auth login` first.",
+                title="Not authenticated",
+                border_style="yellow",
+            )
+        )
+        raise typer.Exit(code=1)
+
+    response = httpx.get(
+        f"{_api_url()}/contact-requests/{request_id}",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=10.0,
+    )
+
+    if response.status_code != 200:
+        console.print(
+            Panel(
+                response.text,
+                title="Status lookup failed",
+                border_style="red",
+            )
+        )
+        raise typer.Exit(code=1)
+
+    body = response.json()
+
+    console.print(
+        Panel(
+            f"Request ID: [bold green]{body['request_id']}[/bold green]\n"
+            f"Purpose: {body['purpose']}\n"
+            f"Status: {body['status']}\n"
+            f"Created: {body['created_at']}",
+            title="Contact request status",
             border_style="cyan",
         )
     )
