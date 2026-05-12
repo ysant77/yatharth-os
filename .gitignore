@@ -16,7 +16,14 @@ ENV/
 # poetry.lock
 
 # FastAPI / Web Server
+# Environment files
 .env
+.env.dev
+.env.prod
+
+# Secrets
+*.pem
+*.key
 .env.local
 .env.*.local
 *.log
