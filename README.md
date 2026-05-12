@@ -654,3 +654,88 @@ Request IDs make it easier to trace a single request across:
 - future observability systems
 
 Structured JSON logs make application events easier to parse and ship to logging platforms.
+
+## Contact Requests
+
+Yatharth OS supports protected contact requests through the API and CLI.
+
+This feature demonstrates a production-style POST workflow:
+
+```text
+POST -> validate -> authenticate -> persist -> trace -> respond
+```
+
+### API flow
+
+Start the API:
+
+```bash
+poetry run uvicorn yatharth_os.api.app:app --reload
+```
+
+Register or login to get a JWT token.
+
+Submit a contact request:
+
+```bash
+curl -X POST http://localhost:8000/contact-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -d "{
+    \"name\": \"Jane Doe\",
+    \"email\": \"jane@example.com\",
+    \"company\": \"Example AI Labs\",
+    \"purpose\": \"collaboration\",
+    \"message\": \"I would like to discuss an applied AI collaboration.\",
+    \"calendly_requested\": true
+  }"
+```
+
+Check request status:
+
+```bash
+curl http://localhost:8000/contact-requests/<REQUEST_ID> \
+  -H "Authorization: Bearer <ACCESS_TOKEN>"
+```
+
+### CLI flow
+
+Make sure the API is running and you are logged in:
+
+```bash
+poetry run yatharth auth login
+```
+
+Submit a request:
+
+```bash
+poetry run yatharth contact submit
+```
+
+Check status:
+
+```bash
+poetry run yatharth contact status <REQUEST_ID>
+```
+
+### Validation
+
+Contact request payloads are validated through Pydantic schemas.
+
+Invalid requests return a structured validation error containing:
+
+- error type
+- message
+- request ID
+- validation details
+
+### Request tracing
+
+Every response includes:
+
+```text
+X-Request-ID
+X-Correlation-ID
+```
+
+These IDs are designed for future observability workflows such as log aggregation, dashboards, and tracing.
