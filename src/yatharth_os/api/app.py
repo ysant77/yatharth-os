@@ -9,7 +9,11 @@ from fastapi import FastAPI
 
 from yatharth_os.api.auth_routes import router as auth_router
 from yatharth_os.api.routes import router as portfolio_router
+from yatharth_os.core.logging import configure_logging
 from yatharth_os.db.init_db import init_db
+from yatharth_os.middleware.request_logging import RequestLoggingMiddleware
+
+configure_logging()
 
 
 @asynccontextmanager
@@ -25,6 +29,8 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(portfolio_router)
 app.include_router(auth_router)
