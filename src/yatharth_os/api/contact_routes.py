@@ -16,6 +16,8 @@ from yatharth_os.contact.service import (
     create_contact_request,
     get_contact_request_for_user,
 )
+from yatharth_os.core.limiter import limiter
+from yatharth_os.core.settings import settings
 from yatharth_os.db.models import User
 from yatharth_os.db.session import get_db_session
 from yatharth_os.schemas.contact import (
@@ -33,15 +35,15 @@ logger = structlog.get_logger(__name__)
     response_model=ContactRequestAcceptedResponse,
     status_code=status.HTTP_201_CREATED,
 )
+@limiter.limit(settings.rate_limit_contact)
 async def submit_contact_request(
-    payload: ContactRequestCreate,
     request: Request,
+    payload: ContactRequestCreate,
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> ContactRequestAcceptedResponse:
     """Create a protected contact request for the authenticated user."""
 
-    # Bot trap/honeypot field. Normal users should never submit this.
     if payload.website:
         logger.warning(
             "contact_request_bot_trap_triggered",
