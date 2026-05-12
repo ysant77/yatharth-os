@@ -8,7 +8,7 @@ own request status.
 from typing import Annotated
 
 import structlog
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from yatharth_os.auth.dependencies import get_current_user
@@ -20,6 +20,8 @@ from yatharth_os.core.limiter import limiter
 from yatharth_os.core.settings import settings
 from yatharth_os.db.models import User
 from yatharth_os.db.session import get_db_session
+from yatharth_os.email.mailer import send_contact_request_emails
+from yatharth_os.email.templates import ContactEmailContext
 from yatharth_os.schemas.contact import (
     ContactRequestAcceptedResponse,
     ContactRequestCreate,
@@ -38,6 +40,7 @@ logger = structlog.get_logger(__name__)
 @limiter.limit(settings.rate_limit_contact)
 async def submit_contact_request(
     request: Request,
+    background_tasks: BackgroundTasks,
     payload: ContactRequestCreate,
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_db_session)],
@@ -61,12 +64,27 @@ async def submit_contact_request(
         user=current_user,
     )
 
+    email_context = ContactEmailContext(
+        request_id=contact_request.request_id,
+        name=contact_request.name,
+        email=contact_request.email,
+        company=contact_request.company,
+        purpose=contact_request.purpose,
+        message=contact_request.message,
+        calendly_requested=payload.calendly_requested,
+        calendly_url=settings.calendly_url,
+    )
+
+    background_tasks.add_task(send_contact_request_emails, email_context)
+
     logger.info(
         "contact_request_created",
         request_id=getattr(request.state, "request_id", None),
+        correlation_id=getattr(request.state, "correlation_id", None),
         contact_request_id=contact_request.request_id,
         user_id=current_user.id,
         purpose=contact_request.purpose,
+        email_acknowledgement_queued=True,
     )
 
     return ContactRequestAcceptedResponse(
@@ -74,7 +92,7 @@ async def submit_contact_request(
         status=contact_request.status,
         message=(
             "Thanks. Your request has been received. "
-            "Yatharth will get back to you if there is a strong fit."
+            "An acknowledgement email will be sent if email delivery is configured."
         ),
     )
 
