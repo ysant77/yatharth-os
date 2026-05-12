@@ -799,3 +799,66 @@ Later production-grade options:
 - admin review queue
 - suspicious payload scoring
 - audit logs
+
+## Email Acknowledgement
+
+Yatharth OS can send email acknowledgements for submitted contact requests.
+
+When a contact request is created, the API queues a background email task.
+
+The system attempts to send:
+
+- an acknowledgement email to the requester
+- an owner notification email to Yatharth, if configured
+
+If SMTP is not configured, email delivery is safely skipped and logged. This keeps local development and CI simple.
+
+### Environment variables
+
+```bash
+YATHARTH_OS_SMTP_HOST=smtp.example.com
+YATHARTH_OS_SMTP_PORT=587
+YATHARTH_OS_SMTP_USERNAME=your-username
+YATHARTH_OS_SMTP_PASSWORD=your-password
+YATHARTH_OS_SMTP_FROM_EMAIL=noreply@example.com
+YATHARTH_OS_SMTP_FROM_NAME="Yatharth OS"
+YATHARTH_OS_OWNER_EMAIL=your-email@example.com
+YATHARTH_OS_CALENDLY_URL=https://calendly.com/your-link
+```
+
+### Local behavior
+
+Without SMTP settings, contact requests still work.
+
+The email workflow logs:
+
+```text
+email_delivery_skipped
+owner_notification_skipped
+```
+
+This is intentional.
+
+### Manual test
+
+Run the API:
+
+```bash
+poetry run uvicorn yatharth_os.api.app:app --reload
+```
+
+Submit a contact request through the authenticated API or CLI:
+
+```bash
+poetry run yatharth contact submit
+```
+
+Expected behavior:
+
+- contact request is persisted
+- response returns request ID
+- email acknowledgement is queued
+- if SMTP is configured, emails are sent
+- if SMTP is not configured, email delivery is skipped safely
+```
+
