@@ -9,12 +9,14 @@ The auth API provides a minimal JWT-based flow:
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from yatharth_os.auth.dependencies import get_current_user
 from yatharth_os.auth.jwt import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from yatharth_os.auth.service import authenticate_user, create_user, get_user_by_email
+from yatharth_os.core.limiter import limiter
+from yatharth_os.core.settings import settings
 from yatharth_os.db.models import User
 from yatharth_os.db.session import get_db_session
 from yatharth_os.schemas.auth import (
@@ -32,7 +34,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
     response_model=TokenResponse,
     status_code=status.HTTP_201_CREATED,
 )
+@limiter.limit(settings.rate_limit_auth)
 async def register_user(
+    request: Request,
     payload: UserRegisterRequest,
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> TokenResponse:
@@ -56,7 +60,9 @@ async def register_user(
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit(settings.rate_limit_auth)
 async def login_user(
+    request: Request,
     payload: UserLoginRequest,
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> TokenResponse:

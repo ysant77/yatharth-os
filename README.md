@@ -739,3 +739,63 @@ X-Correlation-ID
 ```
 
 These IDs are designed for future observability workflows such as log aggregation, dashboards, and tracing.
+
+## API Protection
+
+Yatharth OS includes lightweight API protection for sensitive workflows.
+
+Current protections:
+
+- rate limiting for authentication routes
+- stricter rate limiting for contact request submission
+- honeypot/bot-trap field for contact requests
+- structured rate-limit error responses
+- request ID and correlation ID included in error responses
+
+### Rate limits
+
+Default limits are configurable through environment variables:
+
+```bash
+YATHARTH_OS_RATE_LIMIT_DEFAULT=120/minute
+YATHARTH_OS_RATE_LIMIT_AUTH=20/minute
+YATHARTH_OS_RATE_LIMIT_CONTACT=5/minute
+```
+
+### Protected workflows
+
+Authentication endpoints are rate limited:
+
+```text
+POST /auth/register
+POST /auth/login
+```
+
+Contact request submission is rate limited more strictly:
+
+```text
+POST /contact-requests
+```
+
+### Bot-trap field
+
+The contact request schema includes a hidden field:
+
+```json
+{
+  "website": ""
+}
+```
+
+Real users should leave this empty. Bots often fill every field, so non-empty values are rejected.
+
+### Future upgrades
+
+Later production-grade options:
+
+- Redis-backed distributed rate limiting
+- IP reputation checks
+- CAPTCHA or Turnstile on frontend
+- admin review queue
+- suspicious payload scoring
+- audit logs
