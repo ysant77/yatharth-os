@@ -522,3 +522,88 @@ The export feature turns the portfolio data layer into a reusable professional a
 Instead of manually maintaining separate resume, website, and CLI content, the project can generate a formatted profile directly from structured JSON data.
 
 This keeps the system closer to a single source of truth.
+
+## Authentication
+
+Yatharth OS includes a simple JWT-based authentication flow for protected future features such as contact requests.
+
+The current auth system supports:
+
+- user registration
+- user login
+- JWT access tokens
+- protected `/auth/me` route
+- CLI token storage
+
+### API auth flow
+
+Start the API:
+
+```bash
+poetry run uvicorn yatharth_os.api.app:app --reload
+```
+
+Register:
+
+```bash
+curl -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"test@example.com\",\"full_name\":\"Test User\",\"password\":\"StrongPass123!\"}"
+```
+
+Login:
+
+```bash
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"test@example.com\",\"password\":\"StrongPass123!\"}"
+```
+
+Use the returned access token:
+
+```bash
+curl http://localhost:8000/auth/me \
+  -H "Authorization: Bearer <ACCESS_TOKEN>"
+```
+
+### CLI auth flow
+
+Make sure the API is running first:
+
+```bash
+poetry run uvicorn yatharth_os.api.app:app --reload
+```
+
+Then use:
+
+```bash
+poetry run yatharth auth register
+poetry run yatharth auth login
+poetry run yatharth auth me
+```
+
+The CLI stores the access token locally at:
+
+```text
+~/.yatharth_os/token.json
+```
+
+### Token expiry
+
+Access tokens expire after 30 minutes by default.
+
+You can override this through an environment variable:
+
+```bash
+YATHARTH_OS_ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
+
+### Production note
+
+The default JWT secret is only for local development.
+
+For deployment, set:
+
+```bash
+YATHARTH_OS_JWT_SECRET_KEY=<strong-random-secret>
+```
