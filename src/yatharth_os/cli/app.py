@@ -17,9 +17,12 @@ Example usage:
 
 from __future__ import annotations
 
+import json
+import os
 from pathlib import Path
 from typing import Any
 
+import httpx
 import typer
 from rich.console import Console
 from rich.panel import Panel
@@ -39,8 +42,43 @@ app = typer.Typer(
     help="CLI-first engineering portfolio for Yatharth Mahesh Sant.",
     no_args_is_help=True,
 )
+auth_app = typer.Typer(
+    name="auth",
+    help="Authenticate with a running Yatharth OS API service.",
+    no_args_is_help=True,
+)
 
+app.add_typer(auth_app, name="auth")
 console = Console()
+
+DEFAULT_API_URL = "http://127.0.0.1:8000"
+TOKEN_FILE = Path.home() / ".yatharth_os" / "token.json"
+
+
+def _api_url() -> str:
+    """Return configured API URL for CLI HTTP calls."""
+
+    return os.getenv("YATHARTH_OS_API_URL", DEFAULT_API_URL).rstrip("/")
+
+
+def _save_token(token: str) -> None:
+    """Persist JWT token locally for CLI usage."""
+
+    TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
+    TOKEN_FILE.write_text(
+        json.dumps({"access_token": token}, indent=2), encoding="utf-8"
+    )
+
+
+def _load_token() -> str | None:
+    """Load stored CLI JWT token if it exists."""
+
+    if not TOKEN_FILE.exists():
+        return None
+
+    data = json.loads(TOKEN_FILE.read_text(encoding="utf-8"))
+    token = data.get("access_token")
+    return str(token) if token else None
 
 
 def _normalize_tag(value: str | None) -> str | None:
@@ -87,14 +125,13 @@ def whoami() -> None:
     name = profile.get("name", "Yatharth Mahesh Sant")
     title = profile.get("title", "Applied AI Engineer")
     location = profile.get("location", "Singapore")
-    email = profile.get("email", "ysant77@gmail.com")
     summary = profile.get("summary", "")
 
     content = Text()
     content.append(f"{name}\n", style="bold cyan")
     content.append(f"{title}\n", style="bold")
     content.append(f"Location: {location}\n", style="green")
-    content.append(f"Email: {email}\n", style="green")
+    content.append("Contact: authenticated contact request flow\n", style="green")
 
     if summary:
         content.append("\n")
@@ -259,6 +296,114 @@ def experience() -> None:
                 expand=False,
             )
         )
+
+
+@auth_app.command("register")
+def auth_register() -> None:
+    """Register with the running Yatharth OS API and store the access token."""
+
+    full_name = typer.prompt("Full name")
+    email = typer.prompt("Email")
+    password = typer.prompt("Password", hide_input=True, confirmation_prompt=True)
+
+    response = httpx.post(
+        f"{_api_url()}/auth/register",
+        json={
+            "email": email,
+            "full_name": full_name,
+            "password": password,
+        },
+        timeout=10.0,
+    )
+
+    if response.status_code != 201:
+        console.print(
+            Panel(response.text, title="Registration failed", border_style="red")
+        )
+        raise typer.Exit(code=1)
+
+    token = response.json()["access_token"]
+    _save_token(token)
+
+    console.print(
+        Panel(
+            "Registration successful. Access token saved for CLI use.",
+            title="Auth complete",
+            border_style="green",
+        )
+    )
+
+
+@auth_app.command("login")
+def auth_login() -> None:
+    """Login with the running Yatharth OS API and store the access token."""
+
+    email = typer.prompt("Email")
+    password = typer.prompt("Password", hide_input=True)
+
+    response = httpx.post(
+        f"{_api_url()}/auth/login",
+        json={
+            "email": email,
+            "password": password,
+        },
+        timeout=10.0,
+    )
+
+    if response.status_code != 200:
+        console.print(Panel(response.text, title="Login failed", border_style="red"))
+        raise typer.Exit(code=1)
+
+    token = response.json()["access_token"]
+    _save_token(token)
+
+    console.print(
+        Panel(
+            "Login successful. Access token saved for CLI use.",
+            title="Auth complete",
+            border_style="green",
+        )
+    )
+
+
+@auth_app.command("me")
+def auth_me() -> None:
+    """Show the authenticated user from the API."""
+
+    token = _load_token()
+
+    if token is None:
+        console.print(
+            Panel(
+                "No stored token found. Run `yatharth auth login` first.",
+                title="Not authenticated",
+                border_style="yellow",
+            )
+        )
+        raise typer.Exit(code=1)
+
+    response = httpx.get(
+        f"{_api_url()}/auth/me",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=10.0,
+    )
+
+    if response.status_code != 200:
+        console.print(
+            Panel(response.text, title="Authentication failed", border_style="red")
+        )
+        raise typer.Exit(code=1)
+
+    user = response.json()
+
+    console.print(
+        Panel(
+            f"[bold cyan]{user['full_name']}[/bold cyan]\n{user['email']}\n"
+            f"Active: {user['is_active']}",
+            title="Authenticated user",
+            border_style="cyan",
+        )
+    )
 
 
 @app.command()
