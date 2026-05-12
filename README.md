@@ -607,3 +607,50 @@ For deployment, set:
 ```bash
 YATHARTH_OS_JWT_SECRET_KEY=<strong-random-secret>
 ```
+## Request Logging and Request IDs
+
+Yatharth OS uses structured JSON logging and request ID middleware for production-style debugging.
+
+Every HTTP response includes an `X-Request-ID` header.
+
+If the client provides an `X-Request-ID`, the application preserves it. Otherwise, the API generates one automatically.
+
+### Example
+
+Run the API:
+
+```bash
+poetry run uvicorn yatharth_os.api.app:app --reload
+```
+
+Call the health endpoint:
+
+```bash
+curl -i http://localhost:8000/health
+```
+
+You should see a response header similar to:
+
+```text
+X-Request-ID: 7d3fd0de-f9a4-43a3-b4a0-42be5b1d72f9
+```
+
+You can also provide your own request ID:
+
+```bash
+curl -i http://localhost:8000/health \
+  -H "X-Request-ID: local-debug-123"
+```
+
+### Why this matters
+
+Request IDs make it easier to trace a single request across:
+
+- API logs
+- authentication
+- contact request creation
+- background jobs
+- email acknowledgement
+- future observability systems
+
+Structured JSON logs make application events easier to parse and ship to logging platforms.
